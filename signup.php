@@ -15,6 +15,32 @@
 
   </head>
   <body>
+
+    <?php
+    // Define variables and set to empty values
+      $username = "";
+      $usernameErr = "";
+
+    // Check if the form is submitted
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      // Validate username: it should not be empty and should be alphanumeric
+      if (empty($_POST["username"])) {
+          $usernameErr = "Username is required";
+      } elseif (!preg_match("/^[a-zA-Z0-9_]*$/", $_POST["username"])) {
+        $usernameErr = "Only letters, numbers, and underscores are allowed in username";
+      } else {
+          $username = test_input($_POST["username"]);
+      }
+  }
+
+// Function to sanitize input data
+function test_input($data) {
+    $data = trim($data);        // Remove extra spaces
+    $data = stripslashes($data); // Remove backslashes
+    $data = htmlspecialchars($data); // Prevent XSS attacks
+    return $data;
+}
+?>
     <div class="form-container">
       <!-- Icon at the top center -->
       <div class="icon">
@@ -31,6 +57,7 @@
             id="username"
             placeholder="Enter your email or username"
             required
+           <span style="color:red;"><?php echo $usernameErr; ?></span>
           />
         </div>
         <div class="input-group">
